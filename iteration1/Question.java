@@ -1,11 +1,14 @@
 package mazeProject;
 
 import java.sql.*;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Question 
 {
+	Random rand = new Random();
 	int random = 0;
+	int range = 1;
 	String quest;
 	String userAnswer;
 	boolean answer;
@@ -40,7 +43,9 @@ public class Question
 	public String getTFQuestion() throws SQLException 
 	{
 		stmt = c.createStatement();
-		rs = stmt.executeQuery( "SELECT question FROM TRUEFALSE WHERE id == " + random); 
+		//rs = stmt.executeQuery("SELECT * FROM TRUEFALSE");
+		//range = databaseRows(rs);
+		rs = stmt.executeQuery( "SELECT question FROM TRUEFALSE WHERE id == " + range); 
 		quest = rs.getString("question");
 		System.out.println(quest);
 		userAnswer = kb.next();
@@ -50,7 +55,9 @@ public class Question
 	public String getMultQuestion() throws SQLException
 	{
 		stmt = c.createStatement();
-		rs = stmt.executeQuery( "SELECT question FROM MULTIPLE WHERE id == " + random); 
+		//rs = stmt.executeQuery("SELECT * FROM MULTIPLE");
+		//range = databaseRows(rs);
+		rs = stmt.executeQuery( "SELECT question FROM MULTIPLE WHERE id == " + range); 
 		quest = rs.getString("question");
 		System.out.println(quest);
 		userAnswer = kb.next();
@@ -97,4 +104,35 @@ public class Question
 		return answer;
 	}
 	
+	public boolean askQuestion() throws SQLException
+	{
+		random = rand.nextInt(2);
+		System.out.println(random);
+		if(random != 1)
+		{
+			userAnswer = getTFQuestion();
+			answer = getTFAnswer(userAnswer);
+			
+		}
+		else
+		{
+			userAnswer = getMultQuestion();
+			answer = getMultAnswer(userAnswer);
+		}
+		return answer;
+	}
+	
+	
+	public int databaseRows(ResultSet newSet) throws SQLException
+	{
+		int count = 0;
+		do
+		{
+			count ++;
+		}while(newSet.next());
+		
+		return count;
+	}
+	
 }
+
